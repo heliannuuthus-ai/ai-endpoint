@@ -16,6 +16,11 @@ fastapi = "^0.115.11"
 uvicorn = "^0.34.0"
 python-dotenv = "^1.0.1"
 logging = "^0.4.9.6"
+httpx = { extras = ["cli"], version = "^0.28.1" }
+starlette = "^0.46.1"
+cloudflare = "^4.0.0"
+aiocache = { version = "^0.12.3" }
+python-multipart = "^0.0.20"
 
 [tool.poetry.group.dev.dependencies]
 yapf = "^0.43.0"
@@ -30,12 +35,7 @@ start = "app.main:start"
 column_limit = 120
 
 [tool.yapfignore]
-ignore_patterns = [
-  ".venv",
-  "logs",
-  "**/__pycache__/**",
-  "*.pyc"
-]
+ignore_patterns = [".venv", "logs", "**/__pycache__/**", "*.pyc"]
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"

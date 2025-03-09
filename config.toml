@@ -1,0 +1,4 @@
+[wikipedia]
+chat_model = "@cf/meta/llama-3.3-70b-instruct-fp8-fast"
+image_to_text_model = "@cf/llava-hf/llava-1.5-7b-hf"
+reasoner_model = "@cf/deepseek-ai/deepseek-r1-distill-qwen-32b"
