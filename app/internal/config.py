@@ -74,9 +74,10 @@ class Config:
             model_config.api_key = api_key
             return cipher.decrypt(self.API_KEY_NONCE, base64.b64decode(api_key.encode('utf-8')), None).decode('utf-8')
         elif self.existed_dek and api_key.startswith("plaintext("):
-            model_config.api_key = base64.b64encode(cipher.encrypt(self.API_KEY_NONCE, api_key.encode('utf-8'),
-                                                                   None)).decode('utf-8')
-            return api_key.split("plaintext(")[1].split(")")[0]
+            plaintext_api_key = api_key.split("plaintext(")[1].split(")")[0]
+            model_config.api_key = base64.b64encode(
+                cipher.encrypt(self.API_KEY_NONCE, plaintext_api_key.encode('utf-8'), None)).decode('utf-8')
+            return plaintext_api_key
         else:
             encrypted_api_key = base64.b64encode(cipher.encrypt(self.API_KEY_NONCE, api_key.encode('utf-8'),
                                                                 None)).decode('utf-8')

@@ -38,9 +38,15 @@ async def models():
 
     return {
         k: {
-            "chat_model": v.chat_model,
-            "image_to_text_model": v.image_to_text_model,
-            "reasoner_model": v.reasoner_model
+            **({} if not v.chat_model else {
+                   "chat_model": v.chat_model
+               }),
+            **({} if not v.image_to_text_model else {
+                   "image_to_text_model": v.image_to_text_model
+               }),
+            **({} if not v.reasoner_model else {
+                   "reasoner_model": v.reasoner_model
+               })
         }
         for k, v in config.wikipedia.models.items()
     }
@@ -81,12 +87,13 @@ async def wikipedia(name: Annotated[str, Form(...)],
 
 
 async def parse_response(response: AsyncStream[ChatCompletionChunk]) -> AsyncGenerator[str, None]:
-    is_answer = False
+    is_answer = True
     async for chunk in response:
         content = ""
         if chunk.choices:
             delta = chunk.choices[0].delta
             if hasattr(delta, "reasoning_content") and delta.reasoning_content is not None:
+                is_answer = False
                 content = delta.reasoning_content
             else:
                 if delta.content is not None and len(delta.content) > 0 and not is_answer:

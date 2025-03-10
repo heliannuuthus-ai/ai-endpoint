@@ -6,8 +6,8 @@ image_to_text_model = "qwen-omni-turbo"
 reasoner_model = "qwq-32b"
 
 [wikipedia.models.deepseek]
-api_key = "6vHoZVHPhLC7LBCOMNA6mIKuDamq3sMpnWD59dCeapN6ILuP40+hmIWCzBb4MQTIeRCzqAMSkMHFZKnNbI8="
+api_key = "aEele5Oz5z4jzeo51dAWGI9vehYFLTqoIOqSs2OP4T1Nz8ixfXeDVeBtwvzl5gh38Fg1"
 api_endpoint = "https://api.deepseek.com"
 chat_model = "deepseek-chat"
-image_to_text_model = "1"
+image_to_text_model = ""
 reasoner_model = "deepseek-reasoner"
