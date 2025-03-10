@@ -1,12 +1,16 @@
 from datetime import datetime
 import logging
 from logging.handlers import TimedRotatingFileHandler
-from app.internal import logger
 import sys
 import os
 
 log_dir = "logs"
 os.makedirs(log_dir, exist_ok=True)
+
+logger = logging.getLogger(__name__)
+
+for logger_name in ["uvicorn", "uvicorn.access", "uvicorn.error", "fastapi"]:
+    logging.getLogger(logger_name).handlers = logger.handlers
 
 
 class TimedRotatingFileNameHandler(TimedRotatingFileHandler):
