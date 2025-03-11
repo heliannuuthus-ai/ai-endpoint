@@ -1,4 +1,13 @@
-[wikipedia]
-chat_model = "@cf/meta/llama-3.3-70b-instruct-fp8-fast"
-image_to_text_model = "@cf/llava-hf/llava-1.5-7b-hf"
-reasoner_model = "@cf/deepseek-ai/deepseek-r1-distill-qwen-32b"
+[wikipedia.models.qwen]
+api_key = "jmkdoaktFBrWMSRZbdJtevUdJ23Wy4dbzv4+Bxr3qzodkGeMtKeflQhj1Zt3lpsgzOix"
+api_endpoint = "https://dashscope.aliyuncs.com/compatible-mode/v1"
+chat_model = "qwen-max"
+image_to_text_model = "qwen-omni-turbo"
+reasoner_model = "qwq-32b"
+
+[wikipedia.models.deepseek]
+api_key = "aEele5Oz5z4jzeo51dAWGI9vehYFLTqoIOqSs2OP4T1Nz8ixfXeDVeBtwvzl5gh38Fg1"
+api_endpoint = "https://api.deepseek.com"
+chat_model = "deepseek-chat"
+image_to_text_model = ""
+reasoner_model = "deepseek-reasoner"

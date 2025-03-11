@@ -1,6 +1,6 @@
 from datetime import datetime
 from http.client import HTTPException
-from requests import Request
+from fastapi.requests import Request
 from fastapi.responses import JSONResponse
 
 
