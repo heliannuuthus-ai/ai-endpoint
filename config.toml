@@ -1,13 +1,12 @@
-[wikipedia.models.qwen]
-api_key = "jmkdoaktFBrWMSRZbdJtevUdJ23Wy4dbzv4+Bxr3qzodkGeMtKeflQhj1Zt3lpsgzOix"
-api_endpoint = "https://dashscope.aliyuncs.com/compatible-mode/v1"
-chat_model = "qwen-max"
-image_to_text_model = "qwen-omni-turbo"
-reasoner_model = "qwq-32b"
+[glossary]
+api_key = "+jcJxgbRekFYo8JzN+7a+3eBV6nKh7We4Ap4/VpCbdLdlZHFetTXPZ1fnFY="
 
-[wikipedia.models.deepseek]
-api_key = "aEele5Oz5z4jzeo51dAWGI9vehYFLTqoIOqSs2OP4T1Nz8ixfXeDVeBtwvzl5gh38Fg1"
-api_endpoint = "https://api.deepseek.com"
-chat_model = "deepseek-chat"
-image_to_text_model = ""
-reasoner_model = "deepseek-reasoner"
+[deep_search]
+api_key = "VkO5Fbh+EjdpwdjveS2bXTOTrJ885HFXGTUr0YqU2bcH+ugn/nc57jg56+8="
+depth = 3
+
+[deep_gemini]
+api_key = "fB0Yx1uuWpFYF4Ky+dkpJsUBO2Okp+s9pqHS6fgjjOXhxdzqic9aSsLeTMA="
+
+[proxy]
+url = "http://127.0.0.1:7897"
