@@ -11,20 +11,31 @@ from typing import Optional
 
 
 class ModelConfig(BaseModel):
-    _api_key_plaintext: Optional[str] = None
     api_key: str
-    api_endpoint: str
-    chat_model: str
-    image_to_text_model: str
-    reasoner_model: str
+    _api_key_plaintext: Optional[str] = None
 
 
-class WikipediaConfig(BaseModel):
-    models: dict[str, ModelConfig]
+class GlossaryConfig(ModelConfig):
+    pass
+
+
+class DeepsearchConfig(ModelConfig):
+    depth: int = 5
+
+
+class DeepGeminiConfig(ModelConfig):
+    pass
+
+
+class ProxyConfig(BaseModel):
+    url: str | None = None
 
 
 class ConfigInner(BaseModel):
-    wikipedia: WikipediaConfig
+    glossary: GlossaryConfig
+    deep_search: DeepsearchConfig
+    deep_gemini: DeepGeminiConfig
+    proxy: ProxyConfig
 
 
 class Config:
@@ -52,8 +63,11 @@ class Config:
             self.API_KEY_NONCE = base64.b64decode(API_KEY_NONCE)
 
     def load_config(self):
-        for _, model_config in self.config.wikipedia.models.items():
-            model_config._api_key_plaintext = self.wrap_api_key(model_config)
+        config = self.config
+        for key, value in config.__dict__.items():
+            if isinstance(value, ModelConfig):
+                value._api_key_plaintext = self.wrap_api_key(value)
+                setattr(config, key, value)
 
         self.dump_config()
         if not self.existed_dek:

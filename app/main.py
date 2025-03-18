@@ -5,12 +5,12 @@ import app.internal as internel
 
 import fastapi
 from fastapi import HTTPException
-from app.routers import wikipedia
+from app.routers import glossary
 from fastapi.middleware.cors import CORSMiddleware
 
 app = fastapi.FastAPI()
 
-app.include_router(wikipedia.router)
+app.include_router(glossary.router)
 
 app.add_exception_handler(HTTPException, internel.http_exception_handler)
 app.add_exception_handler(Exception, internel.exception_handler)
