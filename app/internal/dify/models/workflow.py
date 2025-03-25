@@ -16,6 +16,11 @@ class DifyEventType(str, Enum):
     MESSAGE = "message"
     MESSAGE_FILE = "message_file"
     MESSAGE_END = "message_end"
+    ITERATION_STARTED = "iteration_started"
+    ITERATION_NEXT = "iteration_next"
+    ITERATION_COMPLETED = "iteration_completed"
+    PARALLEL_BRANCH_STARTED = "parallel_branch_started"
+    PARALLEL_BRANCH_FINISHED = "parallel_branch_finished"
 
 
 # 公共参数基类
@@ -52,6 +57,11 @@ class BaseEvent(BaseModel):
                 DifyEventType.MESSAGE.value: MessageEvent,
                 DifyEventType.MESSAGE_FILE.value: MessageFileEvent,
                 DifyEventType.MESSAGE_END.value: MessageEndEvent,
+                DifyEventType.ITERATION_STARTED.value: IterationStartedEvent,
+                DifyEventType.ITERATION_NEXT.value: IterationNextEvent,
+                DifyEventType.ITERATION_COMPLETED.value: IterationCompletedEvent,
+                DifyEventType.PARALLEL_BRANCH_STARTED.value: ParallelBranchStartedEvent,
+                DifyEventType.PARALLEL_BRANCH_FINISHED.value: ParallelBranchFinishedEvent,
             }
 
             model_class = event_map.get(event_type)
@@ -194,3 +204,23 @@ class RetrieverResource(BaseModel):
 
 class MessageEndEvent(BaseEvent):
     metadata: Dict[str, Any] = Field(default_factory=dict)  # 包含 usage 和 retriever_resources
+
+
+class IterationStartedEvent(BaseEvent):
+    pass
+
+
+class IterationCompletedEvent(BaseEvent):
+    pass
+
+
+class IterationNextEvent(BaseEvent):
+    pass
+
+
+class ParallelBranchStartedEvent(BaseEvent):
+    pass
+
+
+class ParallelBranchFinishedEvent(BaseEvent):
+    pass

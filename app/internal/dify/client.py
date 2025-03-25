@@ -83,6 +83,10 @@ class DifyClient:
         params = {"user": user}
         return await self._send_request("GET", "/meta", params=params)
 
+    async def create_feedbacks(self, message_id: str, rating: str, user: str, content: str):
+        data = {"rating": rating, "user": user, "content": content}
+        return await self._send_request("POST", f"/messages/{message_id}/feedbacks", data=data)
+
 
 class CompletionClient(DifyClient):
 
