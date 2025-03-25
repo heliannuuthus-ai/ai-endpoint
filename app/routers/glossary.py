@@ -1,7 +1,7 @@
 import asyncio
 from typing import AsyncGenerator, Annotated, Optional
 from fastapi import APIRouter, HTTPException, UploadFile, File, Form, Path, Body
-from fastapi.responses import StreamingResponse
+from fastapi.responses import StreamingResponse, JSONResponse
 from pydantic import BaseModel
 from app.internal.dify import get_chat_client
 from app.internal.dify.models.workflow import DifyEventType, BaseEvent
@@ -23,7 +23,16 @@ class FeedbackRequest(BaseModel):
     content: Optional[str] = None
 
 
-@router.post("/{message_id}/feedback")
+@router.get("/file-types")
+async def file_types():
+    return JSONResponse(
+        content={
+            file_type.value[0]: [suffix.lower() for suffix in file_type.value[1]]
+            for file_type in FileType._member_map_.values()
+        })
+
+
+@router.post("/feedback")
 async def feedback(message_id: Annotated[str, Path()], request: Annotated[FeedbackRequest, Body()]):
     logger.info(f"feedback request: {request}")
 
@@ -33,21 +42,22 @@ async def feedback(message_id: Annotated[str, Path()], request: Annotated[Feedba
     return response.json()
 
 
-async def upload(files: Annotated[list[UploadFile], Form()], user: Annotated[str, Form()] = None):
-    logger.info(f"upload file: {files.filename}, user: {user}")
+@router.post("/upload")
+async def upload(file: Annotated[UploadFile, Form()], user: Annotated[str, Form()] = None):
 
-    if not files:
+    logger.info(f"upload file: {file.filename}, user: {user}")
+
+    if file.filename is None:
         raise HTTPException(status_code=400, detail="No file uploaded")
-
-    for item in range(len(files)):
-        if files[item].filename is None:
-            raise HTTPException(status_code=400, detail="No file uploaded")
 
     client = get_chat_client(_CLIENT_NAME)
 
-    response = await client.file_upload(_USERNAME, files)
-
-    return FileMeta.from_response(response)
+    response = await client.file_upload(_USERNAME,
+                                        files={"file": (file.filename, await file.read(), file.content_type)})
+    if response.status_code // 100 != 2:
+        logger.error(f"Failed to upload file, code: {response.status_code}, message: {response.text}")
+        raise HTTPException(status_code=400, detail="Failed to upload file")
+    return FileMeta.from_response(**response.json())
 
 
 class GlossaryRequest(BaseModel):
@@ -65,12 +75,12 @@ async def glossary(request: GlossaryRequest) -> StreamingResponse:
     )
 
     client = get_chat_client(_CLIENT_NAME)
-    files = {}
+    files: dict[FileType, FileMeta] = {}
     for file_meta in request.files_meta:
         file_type = FileType.from_meta(file_meta)
         if not file_type:
             raise HTTPException(status_code=400, detail=f"Invalid file type: {file_meta.name}")
-        files[file_type.value[0]] = file_meta.id
+        files[file_type] = file_meta
 
     response = await client.create_chat_message(query=request.prompt,
                                                 inputs={
@@ -79,7 +89,7 @@ async def glossary(request: GlossaryRequest) -> StreamingResponse:
                                                 },
                                                 user=_USERNAME,
                                                 files=[{
-                                                    "type": file_type.value[0],
+                                                    "type": file_type.value[0].lower(),
                                                     "transfer_method": "local_file",
                                                     "upload_file_id": file_meta.id,
                                                 } for file_type, file_meta in files.items()])

@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from enum import Enum
-from httpx import Response
+from typing import Optional
 
 
 class FileMeta(BaseModel):
@@ -10,11 +10,11 @@ class FileMeta(BaseModel):
     extension: str
     mime_type: str
     created_by: str
-    created_at: str
+    created_at: int
 
     @classmethod
-    def from_response(cls, response: Response):
-        return cls(**response.json())
+    def from_response(cls, **kwargs):
+        return cls(**kwargs)
 
 
 class FileTransferMethod(Enum):
@@ -31,7 +31,7 @@ class FileType(Enum):
     VIDEO = ("video", ['MP4', 'MOV', 'MPEG', 'MPGA'])
 
     @staticmethod
-    def from_meta(meta: FileMeta):
+    def from_meta(meta: FileMeta) -> Optional["FileType"]:
         for file_type in FileType:
             if meta.extension in file_type.value[1]:
                 return file_type(meta)
