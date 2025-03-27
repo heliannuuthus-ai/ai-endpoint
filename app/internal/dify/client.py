@@ -3,6 +3,7 @@ import httpx
 from typing import Literal
 import threading
 from app.internal import logger, get_config
+from app.utils.http import unambiguous
 
 lock = threading.Lock()
 
@@ -58,6 +59,12 @@ class DifyClient:
 
         url = f"{self.base_url}{endpoint}"
 
+        if params:
+            params = unambiguous(**params)
+
+        if data:
+            data = unambiguous(**data)
+
         return await _global_client().send(_global_client().build_request(method,
                                                                           url,
                                                                           json=data,
@@ -75,8 +82,8 @@ class DifyClient:
         data = {"user": user}
         return await self._send_request_with_files("POST", "/files/upload", data=data, files=files)
 
-    async def text_to_audio(self, text: str, user: str, streaming: bool = False):
-        data = {"text": text, "user": user, "streaming": streaming}
+    async def text_to_audio(self, message_id: str, text: str, user: str):
+        data = {"message_id": message_id, "text": text, "user": user}
         return await self._send_request("POST", "/text-to-audio", data=data)
 
     async def get_meta(self, user):
